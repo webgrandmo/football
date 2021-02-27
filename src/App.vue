@@ -13,11 +13,12 @@
     <aside>Sidebar</aside>
     <main>
       <section class="card-list">
-          <card-component v-for="m in items" :key="m.id"
+          <card-component v-for="m in computedObj" :key="m.id"
           :match="m.title"
           :video="m.videos[0].embed"
           :competition="m.competition.name"
           :thumb="m.thumb"/>
+          <button type="button" @click="showMore">Show more</button>
       </section>
       
     </main>
@@ -26,14 +27,15 @@
 </template>
 
 <script>
-import CardComponent from './components/CardComponent.vue'
+import CardComponent from './components/CardComponent.vue';
 
 export default {
   components: { CardComponent },
   name: 'App',
   data() {
     return {
-      items: []
+      items: [],
+      limit: 5
     }
   },
   async beforeMount () {
@@ -44,6 +46,27 @@ export default {
         console.log(this.items)
   },
 
+  computed:{
+    computedObj(){
+      return this.items.slice(0, this.limit)
+    }
+  },
+  methods: {   
+    
+    
+    showMore() {
+      window.onscroll = () => {
+        let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+
+          if (bottomOfWindow) {
+            this.limit += 10;
+          }
+      };
+    },
+  },
+  mounted() {
+    this.showMore();
+  }
 }
 </script>
 
